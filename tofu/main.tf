@@ -78,3 +78,21 @@ resource "kubernetes_namespace" "postgrest" {
     name = "postgrest"
   }
 }
+
+resource "kubernetes_secret" "postgrest_db" {
+  metadata {
+    name      = "postgrest-db"
+    namespace = kubernetes_namespace.postgrest.metadata[0].name
+  }
+
+  data = {
+    db-uri = base64encode(
+      "postgres://${var.postgrest_user}:${var.postgrest_password}@postgres-infra-takehome:${var.postgres_port}/${var.postgrest_db}"
+    )
+  }
+
+  depends_on = [
+    postgresql_role.postgrest_user,
+    kubernetes_namespace.postgrest
+  ]
+}
