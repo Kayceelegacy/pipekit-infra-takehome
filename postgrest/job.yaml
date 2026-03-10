@@ -1,0 +1,35 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: seed-postgrest-db
+  namespace: postgrest
+spec:
+  backoffLimit: 3
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: seed
+          image: postgres:16-alpine
+          env:
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgrest-db
+                  key: db-uri
+          command:
+            - /bin/sh
+            - -c
+            - |
+              echo "Seeding database..."
+              psql "$(echo $PGPASSWORD)" <<EOF
+              CREATE TABLE IF NOT EXISTS items (
+                id SERIAL PRIMARY KEY,
+                name TEXT NOT NULL
+              );
+
+              INSERT INTO items (name) VALUES
+                ('apple'),
+                ('banana'),
+                ('carrot');
+              EOF
