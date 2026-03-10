@@ -72,3 +72,9 @@ resource "postgresql_role" "postgrest_user" {
 
   depends_on = [postgresql_database.postgrest]
 }
+
+resource "kubernetes_namespace" "postgrest" {
+  metadata {
+    name = "postgrest"
+  }
+}
