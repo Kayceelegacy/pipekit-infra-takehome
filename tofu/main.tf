@@ -63,3 +63,12 @@ resource "postgresql_database" "postgrest" {
 provider "kubernetes" {
   config_path = "~/.kube/config"
 }
+
+resource "postgresql_role" "postgrest_user" {
+  name      = var.postgrest_user
+  password  = var.postgrest_password
+  login     = true
+  superuser = true
+
+  depends_on = [postgresql_database.postgrest]
+}
