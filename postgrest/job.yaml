@@ -12,7 +12,7 @@ spec:
         - name: seed
           image: postgres:16-alpine
           env:
-            - name: DATABASE_URL
+            - name: PGPASSWORD
               valueFrom:
                 secretKeyRef:
                   name: postgrest-db
@@ -22,7 +22,7 @@ spec:
             - -c
             - |
               echo "Seeding database..."
-              psql "$DATABASE_URL" <<EOF
+              psql "$(echo $PGPASSWORD)" <<EOF
               CREATE TABLE IF NOT EXISTS items (
                 id SERIAL PRIMARY KEY,
                 name TEXT NOT NULL
