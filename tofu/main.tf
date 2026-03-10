@@ -59,3 +59,7 @@ resource "postgresql_database" "postgrest" {
   name       = "postgrest"
   depends_on = [docker_container.postgres]
 }
+
+provider "kubernetes" {
+  config_path = "~/.kube/config"
+}
